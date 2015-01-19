@@ -1,0 +1,28 @@
+1.安装phpunit工具：
+	wget https://phar.phpunit.de/phpunit.phar
+	chmod +x phpunit.phar
+	sudo mv phpunit.phar /usr/local/bin/phpunit
+	或者从https://phar.phpunit.de/ 下载所需要的版本
+
+2.配置test/config.php文件，设置如下：
+		'SRC_CLASS_PATH' => '/search/nginx/html/famous_brands/backend/WEB-INF/class/',//需要测试文件所在的目录
+		'UNIT_TEST_PATH' => '/search/nginx/html/famous_brands/tests/Test/',//生成的单元测试文件目录
+		'SUPERPHP_PATH' => '/search/superphp/',//superPHP框架所在的目录
+		'WEB_XML_FILE' => '/search/nginx/html/famous_brands/backend/WEB-INF/web.xml',//web.xml文件
+		'SKIP_FOLDERS' => array('processor','CRON','Base','util'),//忽略所要测试的文件夹（i）
+		'SKIP_FUNCTIONS' => array('__construct','run','test','beforeList','afterList'),//忽略所要测试的函数
+
+3.生成测试文件,运行：php genUnitTestFile.php ; （针对类中的public方法,生成测试类文件中对应的方法;再次运行，会生成在New_Test文件夹中，不影响正在编辑的测试用例类）
+
+4.运行已经生成的单元测试文件：
+	cd /search/nginx/html/famous_brands/tests/Test/ && ls *.php | xargs -I '{}' phpunit '{}'
+	如果没有出现异常，测试成功，具体phpunit工具的是用可以参考帮助文档或者官网在线文档
+
+5.具体生成的单元测试文件可以根据自己的逻辑，使用phpunit 单独测试，测试用例参考文档.
+	
+PHPUnit:
+1.官网：https://phpunit.de/
+2.文档：https://phpunit.de/manual/current/zh_cn/installation.html
+
+@Author:wuyong
+@Date: 2015年 01月 19日 星期一 00:29:56 CST
