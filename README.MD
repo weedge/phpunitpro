@@ -1,8 +1,8 @@
 ###介绍：
-1) 很多猿人，包括自己在内，总会出现对自己写的代码感觉良好，不习惯去些什么单元测试；  
+1. 很多猿人，包括自己在内，总会出现对自己写的代码感觉良好，不习惯去些什么单元测试；  
 单元测试在项目代码不断壮大的过程中，起到一个代码质量监控的作用;还有一个好处是如果人猿变动了，也能保证代码质量，逻辑不易出错；也可当做一种代码文档；如果是测试先行，那就属于设计阶段的行为了。  
-2) 由于以前项目整体重构，没有足够的时间对各个单元模块的逻辑功能进行单元测试，为了保证代码质量，将单元测试补上，将整个代码逻辑覆盖倒，也为了以后代码重构时不会出现逻辑错误。  
-3) 写了一个小工具(有待完善)，主要是通过配置文件配置，来遍历被测试目录下文件类中的public函数(类的设计)；生成对应指定的测试用例文件；节省编写测试用例的时间。  
+2. 由于以前项目整体重构，没有足够的时间对各个单元模块的逻辑功能进行单元测试，为了保证代码质量，将单元测试补上，将整个代码逻辑覆盖倒，也为了以后代码重构时不会出现逻辑错误。  
+3. 写了一个小工具(有待完善)，主要是通过配置文件配置，来遍历被测试目录下文件类中的public函数(类的设计)；生成对应指定的测试用例文件；节省编写测试用例的时间。  
 
 ###安装phpunit工具：
 	wget https://phar.phpunit.de/phpunit.phar  
@@ -15,7 +15,7 @@ pear uninstall phpunit/PHPUnit phpunit/PHPUnit_MockObject phpunit/PHP_CodeCovera
 https://github.com/sebastianbergmann/phpunit/wiki/End-of-Life-for-PEAR-Installation-Method ）  
 
 ###配置test/config.php文件，
-   1) 对于superphp设置如下：  
+   1. 对于superphp设置如下：  
   
 		'SRC_CLASS_PATH' => '/search/nginx/html/famous_brands/backend/WEB-INF/class/',//需要测试文件所在的目录  
 		'RECURSIVE' => true,//是否递归遍历SRC_CLASS_PATH  
@@ -25,7 +25,7 @@ https://github.com/sebastianbergmann/phpunit/wiki/End-of-Life-for-PEAR-Installat
 		'SKIP_FOLDERS' => array('processor','CRON','Base','util'),//忽略所要测试的文件夹（i）  
 		'SKIP_FUNCTIONS' => array('__construct','run','test','beforeList','afterList'),//忽略所要测试的函数  
   
-   2) 对于myframe(自己瞎整的框架)设置如下：  
+   2. 对于myframe(自己瞎整的框架)设置如下：  
   
 		'SRC_CLASS_PATH' => '/search/nginx/html/myframe/class/',//需要测试文件所在的目录  
 		'RECURSIVE' => true,//是否递归遍历SRC_CLASS_PATH  
@@ -50,9 +50,8 @@ https://github.com/sebastianbergmann/phpunit/wiki/End-of-Life-for-PEAR-Installat
 @todo  
 	
 ###PHPUnit:
-1.官网：https://phpunit.de/  
-2.文档：https://phpunit.de/manual/current/zh_cn/installation.html  
+1. 官网：https://phpunit.de/  
+2. 文档：https://phpunit.de/manual/current/zh_cn/installation.html  
 
-@Author:wuyong  
 @Date: 2015年 01月 19日 星期一 00:29:56 CST  
 @modified Date: 2015年 01月 24日 星期六 22:38:10 CST  
