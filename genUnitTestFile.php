@@ -12,7 +12,12 @@ require_once('config.php');
 define( "FILE_DEFAULT_DIRECTORY_CREATION_MODE", 0755 );
 
 try{
-	$config = Config::$sosoConfig;
+	if($argc<2) {
+		echo "\n请输入应用名称：tuan; dyp; mai; dh123; case; .. etc.\n\n";
+		exit;
+	}
+	$app = $argv[1];
+	$config = Config::load($app);
     $oUnitTestBuilder = new UnitTestBuilder($config);
     $oUnitTestBuilder->run();
 }catch (Exception $e){
@@ -23,8 +28,8 @@ try{
  * UnitTestBuilder 
  * 
  * @desc: 创建单元测试类
- * @version $id$
- * @copyright 2013-2014 upd-sogou
+ * @version $1.0$
+ * @copyright 2013-2015 upd-sogou
  * @author wuyong <wuyong@sogou-inc.com> 
  */
 class UnitTestBuilder {
@@ -49,7 +54,30 @@ class UnitTestBuilder {
 
 	private static $_testUnitCodeTpl = '<?php
 /**
- * @coder: wuyong
+ * @author: wuyong
+ * @create_time: ###TIME###
+ */
+class Test_###CLASS### extends PHPUnit_Framework_TestCase{
+
+	public function setUp(){ }
+
+	public function tearDown(){ }
+		
+	public function testExample(){
+		$this->assertTrue(true);
+		$this->assertEmpty(array());
+		$this->assertCount(1,array(1));
+		$this->assertEquals(1,1);
+		//...etc
+	}
+	###TEST_FUNCTIONS###
+
+}
+?>';
+
+	private static $_testSOSOUnitCodeTpl = '<?php
+/**
+ * @author: wuyong
  * @create_time: ###TIME###
  */
 class Test_###CLASS### extends PHPUnit_Framework_TestCase{
@@ -80,35 +108,44 @@ class Test_###CLASS### extends PHPUnit_Framework_TestCase{
 	private $mOutTestDir;
 	private $mSuperphpPath;
 	private $mWebXmlFile;
+	private $mRecursive;
 
 	public function __construct($config){
 		$this->mSrcClassPath = $config['SRC_CLASS_PATH'];
 		$this->mOutTestDir = $config['UNIT_TEST_PATH'];
 		$this->mSuperphpPath = $config['SUPERPHP_PATH'];
 		$this->mWebXmlFile = $config['WEB_XML_FILE'];
+		$this->mRecursive = $config['RECURSIVE'];
+
 		self::$_skipFunctions = array_unique(array_merge(self::$_skipFunctions,$config['SKIP_FUNCTIONS']));
 		self::$_skipFolders = array_unique(array_merge(self::$_skipFolders,$config['SKIP_FOLDERS']));
 	}
+	// }}}
 
-    static public function getCodeTpl($type='class'){
+    static public function getClassCodeTpl($type=''){
 		$tpl = '';
 		switch($type){
-		case 'class':
+		case 'case':
 			$tpl = self::$_testUnitCodeTpl;
 			break;
-		case 'function':
-			$tpl = self::$_testFunctionTpl;
+		case 'soso':
+			$tpl = self::$_testSOSOUnitCodeTpl;
+			break;
+		default:
+			$tpl = self::$_testSOSOUnitCodeTpl;
 			break;
 		}
+
 		return $tpl;
     }
 
 	public function run(){
+		echo "\nsearch files in {$this->mSrcClassPath} successed!\n\n";
         $path = $this->mSrcClassPath;
-		$files = self::findFiles($path,true);//不递归找,只针对单个目录下的php文件
+		$files = self::findFiles($path,$this->mRecursive);//递归找
 		$classes = self::findClasses($files);
 		$this->generatorTestFile($classes);
-		echo "\ngenerator test file successed!\n";
+		echo "\ngenerator test files in {$this->mOutTestDir} successed!\n\n";
 	}
 
 	/* private findFiles($dirname,$isRecursive=true) {{{ */ 
@@ -155,13 +192,13 @@ class Test_###CLASS### extends PHPUnit_Framework_TestCase{
 	 * @return array
 	 */
 	static private function findClasses($files){
-        $classes = array();
 		$files_classes_funcs = array();
+		$classes = array();
         foreach ($files as $file) {
 			$classes_funcs = self::findClassAndFinctionFromAFile($file);
             foreach ($classes_funcs as $class_functions) {
-				if(in_array($class_functions['class'],$classes)){
-					echo "Repeatedly Class $class in file $file\n";
+				if(count($classes)>0&&in_array($class_functions['class'],$classes)){
+					echo "Repeatedly Class {$class_functions['class']} in file $file\n";
 				} 
 				$classes[] = $class_functions['class'];
 				$files_classes_funcs[$class_functions['class']]['file'] = $file;
@@ -183,8 +220,8 @@ class Test_###CLASS### extends PHPUnit_Framework_TestCase{
 	 * @author: wuyong
      */
     private function generatorTestFile($classes) {
-		$class_code = self::getCodeTpl();
-		$func_code = self::getCodeTpl('function');
+		$class_code = self::getClassCodeTpl('soso');
+		$func_code = self::$_testFunctionTpl;
         foreach ($classes as $class => $value) {
 			$outTestDir = $this->mOutTestDir;
 			$outFile = $this->mOutTestDir . $class . ".php";
@@ -218,20 +255,20 @@ class Test_###CLASS### extends PHPUnit_Framework_TestCase{
         $lines = file($file);
 		$index = 0;//0是文件中没有被类封装的过程函数
         foreach ($lines as $line) {
-            if (preg_match("/^\s*class\s+(\S+)\s*/", $line, $match)) {
+            if (preg_match("/^\s*class\s+(\S+)\s*/i", $line, $match)) {
                 $class = trim(rtrim($match[1],'{'));
 				$index++;
             }
-            if (preg_match("/^\s*abstract\s*class\s+(\S+)\s*/", $line, $match)) {
+            if (preg_match("/^\s*abstract\s*class\s+(\S+)\s*/i", $line, $match)) {
                 $class = trim(rtrim($match[1],'{'));
 				$index++;
             }
-            if (preg_match("/^\s*interface\s+(\S+)\s*/", $line, $match)) {
+            if (preg_match("/^\s*interface\s+(\S+)\s*/i", $line, $match)) {
                 $class = trim(rtrim($match[1],'{'));
 				$index++;
             }
 
-			if (preg_match("/^\s*(?:(public\s+))?function\s+(\S+)\s*\(/", $line, $match)) {
+			if (preg_match("/^\s*(?:(public\s+))?function\s+(\S+)\s*\(/i", $line, $match)) {
 				$func = explode('(',$match[2]);
 				$classes[$index]['functions'][] = trim($func[0]);
 				$classes[$index]['class'] = $class; 
