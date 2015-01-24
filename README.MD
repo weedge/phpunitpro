@@ -35,7 +35,7 @@ https://github.com/sebastianbergmann/phpunit/wiki/End-of-Life-for-PEAR-Installat
 		'SKIP_FUNCTIONS' => array('__construct','run','test'),//忽略所要测试的函数  
 
 ###生成测试文件
-	运行：（针对类中的public方法,生成测试类文件中对应的方法;再次运行，会生成在New_Test文件夹中，不影响正在编辑的测试用例类）  
+运行：（针对类中的public方法,生成测试类文件中对应的方法;再次运行，会生成在New_Test文件夹中，不影响正在编辑的测试用例类）  
 	php genUnitTestFile.php  
 
 ###运行已经生成的单元测试文件
