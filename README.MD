@@ -44,7 +44,7 @@ https://github.com/sebastianbergmann/phpunit/wiki/End-of-Life-for-PEAR-Installat
 	如果没有出现异常，测试成功，具体phpunit工具的是用可以参考帮助文档或者官网在线文档  
   
 	具体生成的单元测试文件可以根据自己的逻辑，使用phpunit 单独测试调试代码，测试用例参考文档.  
-(使用覆盖测试可以指定目录生成html静态文件，可以通过在该目录下输入命令：python -m SimpleHTTPServer 8888建个简单的服务，通过 http://localhost:8080/index.html 浏览产生的代码覆盖情况；需要安装xdebug扩展:yum install php-pecl-xdebug.x86_64 -y; 或者直接用pecl search xdebug,然后选择一个版本的xdebug安装上)  
+(使用覆盖测试可以指定目录生成html静态文件，可以通过在该目录下输入命令：python -m SimpleHTTPServer 8080建个简单的服务，通过 http://localhost:8080/index.html 浏览产生的代码覆盖情况；需要安装xdebug扩展:yum install php-pecl-xdebug.x86_64 -y; 或者直接用pecl search xdebug,然后选择一个版本的xdebug安装上)  
 
 ###采用phpUnit源码框架进行测试
 @todo  
